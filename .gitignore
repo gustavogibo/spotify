@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+venv/
+.env
+
+# Power BI
+# (Power BI creates temp files sometimes, though rare in simple folders)
+*.lock
+*.pbix.tmp
+
+# OS generated files
+.DS_Store
+Thumbs.db
