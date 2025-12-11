@@ -44,10 +44,16 @@ def clean_data(df):
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
 
     # 3. Remove Duplicates
-    initial_rows = len(df)
-    df.drop_duplicates(inplace=True)
-    if len(df) < initial_rows:
+    duplicates = df[df.duplicated()]
+    if not duplicates.empty:
+        print(f"Found {len(duplicates)} duplicate rows.")
+        print("Sample of duplicates:")
+        print(duplicates.head())
+        initial_rows = len(df)
+        df.drop_duplicates(inplace=True)
         print(f"Removed {initial_rows - len(df)} duplicate rows.")
+    else:
+        print("No duplicate rows found.")
 
     # 4. Handle Missing Values (Example logic)
     # print("Missing values per column:")
