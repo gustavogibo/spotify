@@ -30,7 +30,15 @@ def load_data(filepath):
 
 def standardize_columns(df):
     """Standardizes column names to snake_case."""
-    df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
+    df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+    
+    # Remove 'unnamed:_0' if it exists (common artifact)
+    if 'unnamed:_0' in df.columns:
+        df.drop(columns=['unnamed:_0'], inplace=True)
+        print("Dropped 'unnamed:_0' column.")
+
+    print("Columns after standardization:")
+    print(list(df.columns))
     return df
 
 def remove_duplicates(df):
