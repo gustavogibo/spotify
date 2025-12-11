@@ -28,6 +28,47 @@ def load_data(filepath):
         print(f"Error loading data: {e}")
         return None
 
+def standardize_columns(df):
+    """Standardizes column names to snake_case."""
+    df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
+    return df
+
+def remove_duplicates(df):
+    """Checks for and removes duplicate rows."""
+    duplicates = df[df.duplicated()]
+    if not duplicates.empty:
+        print(f"Found {len(duplicates)} duplicate rows.")
+        print("Sample of duplicates:")
+        print(duplicates.head())
+        initial_rows = len(df)
+        df.drop_duplicates(inplace=True)
+        print(f"Removed {initial_rows - len(df)} duplicate rows.")
+    else:
+        print("No duplicate rows found.")
+    return df
+
+def handle_missing_values(df):
+    """Checks for missing values and removes rows with missing core data."""
+    missing_values = df.isnull().sum()
+    if missing_values.sum() > 0:
+        print("\nMissing values found per column:")
+        print(missing_values[missing_values > 0])
+    else:
+        print("\nNo missing values found.")
+
+    # Remove rows where track_name or album_name are missing
+    subset_cols = ['track_name', 'album_name']
+    existing_subset = [col for col in subset_cols if col in df.columns]
+    
+    if existing_subset:
+        initial_rows = len(df)
+        df.dropna(subset=existing_subset, inplace=True)
+        dropped = initial_rows - len(df)
+        if dropped > 0:
+            print(f"Dropped {dropped} rows where { ' or '.join(existing_subset) } were missing.")
+
+    return df
+
 def clean_data(df):
     """
     Main function to clean the dataframe.
@@ -40,25 +81,10 @@ def clean_data(df):
     # 1. Create a copy to avoid SettingWithCopy warnings
     df = df.copy()
 
-    # 2. Standardize Column Names (snake_case)
-    df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
-
-    # 3. Remove Duplicates
-    duplicates = df[df.duplicated()]
-    if not duplicates.empty:
-        print(f"Found {len(duplicates)} duplicate rows.")
-        print("Sample of duplicates:")
-        print(duplicates.head())
-        initial_rows = len(df)
-        df.drop_duplicates(inplace=True)
-        print(f"Removed {initial_rows - len(df)} duplicate rows.")
-    else:
-        print("No duplicate rows found.")
-
-    # 4. Handle Missing Values (Example logic)
-    # print("Missing values per column:")
-    # print(df.isnull().sum())
-    # df.dropna(subset=['track_id'], inplace=True) # Example: Drop if ID is missing
+    # Apply cleaning steps
+    df = standardize_columns(df)
+    df = remove_duplicates(df)
+    df = handle_missing_values(df)
 
     print("--- Data Cleaning Completed ---\n")
     return df
