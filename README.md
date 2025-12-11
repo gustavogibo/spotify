@@ -44,5 +44,16 @@ The project is organized as follows:
 *   Run the scripts in `src/` to clean and process the data.
 *   Open the `.pbix` file in Power BI to interact with the dashboard.
 
+
+## 🧹 Data Cleaning & Transformation
+Raw data often contains inconsistencies that can break Power BI models. I built a Python script (`data_cleaning.py`) to automate the ETL (Extract, Transform, Load) process.
+
+**Key Cleaning Steps Performed:**
+* **Standardization:** Converted all column headers to `snake_case` (e.g., `Track Name` → `track_name`) and removed special characters to ensure clean DAX references in Power BI.
+* **Deduplication:** Scanned for and removed full-row duplicates to ensure stream counts remain accurate.
+* **Data Quality Enforcement:** Removed records where critical identifiers (`track_name` or `album_name`) were null. 
+    * *Note: These missing values represented <0.05% of the dataset, so dropping them preserved data integrity without skewing results.*
+* **Output:** The script generates a clean file (`dataset-cleaned.csv`) ready for direct import into Power BI.
+
 ## License
 MIT
