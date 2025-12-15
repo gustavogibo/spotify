@@ -77,6 +77,26 @@ def handle_missing_values(df):
 
     return df
 
+def transform_data(df):
+    """Performs specific data transformations to facilitate Tableau analysis."""
+    # 1. Convert duration_ms to minutes for easier readability in charts
+    if 'duration_ms' in df.columns:
+        df['duration_min'] = df['duration_ms'] / 60000
+        print("Created 'duration_min' column.")
+
+    # 2. Convert release_date to datetime objects for Time Series analysis
+    if 'release_date' in df.columns:
+        df['release_date'] = pd.to_datetime(df['release_date'], errors='coerce')
+        print("Converted 'release_date' to datetime objects.")
+
+    # 3. Clean all string columns to avoid whitespace issues in Tableau filters
+    # e.g. prevents "Pop" vs "Pop " appearing as distinct values
+    for col in df.select_dtypes(include=['object']).columns:
+        df[col] = df[col].str.strip()
+    print("Stripped whitespace from string columns.")
+
+    return df
+
 def clean_data(df):
     """
     Main function to clean the dataframe.
@@ -93,6 +113,7 @@ def clean_data(df):
     df = standardize_columns(df)
     df = remove_duplicates(df)
     df = handle_missing_values(df)
+    df = transform_data(df)
 
     print("--- Data Cleaning Completed ---\n")
     return df
