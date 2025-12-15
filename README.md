@@ -53,6 +53,7 @@ Raw data often contains inconsistencies that can break Power BI models. I built 
 * **Deduplication:** Scanned for and removed full-row duplicates to ensure stream counts remain accurate.
 * **Data Quality Enforcement:** Removed records where critical identifiers (`track_name` or `album_name`) were null. 
     * *Note: These missing values represented <0.05% of the dataset, so dropping them preserved data integrity without skewing results.*
+* **Tableau Optimization:** Implemented specific transformations for smoother visualization: created a `duration_min` column, converted `release_date` to datetime for time-series drill-downs, and stripped whitespace from all string columns.
 * **Output:** The script generates a clean file (`dataset-cleaned.csv`) ready for direct import into Power BI.
 
 ## License
